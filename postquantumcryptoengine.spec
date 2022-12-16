@@ -20,6 +20,7 @@ URL:		https://linphone.org/
 Source0:	https://gitlab.linphone.org/BC/public/%{name}/-/archive/%{?commit:%{commit}}%{!?commit:%{version}}/%{name}-%{?commit:%{commit}}%{!?commit:%{version}}.tar.bz2
 BuildRequires:	cmake
 BuildRequires:	ninja
+BuildRequires:	bctoolbox-static-devel
 BuildRequires:	cmake(bctoolbox)
 BuildRequires:	cmake(liboqs)
 
