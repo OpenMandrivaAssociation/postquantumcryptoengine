@@ -7,7 +7,7 @@
 %bcond_without	tests
 
 # NOTE: use commit if the last release is still in beta
-%global commit 8bdb9c1d3988a389af462c793189d11165733d2a
+#%%global commit 8bdb9c1d3988a389af462c793189d11165733d2a
 
 Summary:	Post Quantum algorithm integration to bctoolbox
 Name:		postquantumcryptoengine
@@ -16,7 +16,6 @@ Release:	1
 License:	GPLv3
 Group:		System/Libraries
 URL:		https://linphone.org/
-#Source0:	https://gitlab.linphone.org/BC/public/Postquantumcryptoengine/-/archive/%{version}-beta/Postquantumcryptoengine-%{version}-beta.tar.bz2
 Source0:	https://gitlab.linphone.org/BC/public/%{name}/-/archive/%{?commit:%{commit}}%{!?commit:%{version}}/%{name}-%{?commit:%{commit}}%{!?commit:%{version}}.tar.bz2
 BuildRequires:	cmake
 BuildRequires:	ninja
@@ -63,6 +62,7 @@ Requires:	%{libname} = %{version}-%{release}
 This package contains development files for %{name}
 
 %files -n %{devname}
+%license LICENSE.txt
 %{_includedir}/%{name}/
 %{_libdir}/lib%{name}.so
 %{_libdir}/cmake/%{name}
