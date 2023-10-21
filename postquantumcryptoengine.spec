@@ -11,8 +11,8 @@
 
 Summary:	Post Quantum algorithm integration to bctoolbox
 Name:		postquantumcryptoengine
-Version:	5.2.0
-Release:	3
+Version:	5.2.94
+Release:	1
 License:	GPLv3
 Group:		System/Libraries
 URL:		https://linphone.org/
