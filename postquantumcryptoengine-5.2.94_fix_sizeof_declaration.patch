@@ -1,0 +1,12 @@
+From ea086ea0aa9ec3b5cfb5be7d73fd6da579e1dce9 Mon Sep 17 00:00:00 2001
+From: Julien Wadel <julien.wadel@belledonne-communications.com>
+--- a/tester/crypto.cc
++++ b/tester/crypto.cc
+@@ -546,4 +546,4 @@ static test_t crypto_tests[] = {
+ };
+ 
+ test_suite_t crypto_test_suite = {"Crypto", NULL, NULL, NULL, NULL,
+-							   sizeof(crypto_tests) / sizeof(crypto_tests[0]), crypto_tests, 0};
++							   sizeof(crypto_tests) / sizeof(crypto_tests[0]), crypto_tests};
+
+-- 

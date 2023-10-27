@@ -17,6 +17,8 @@ License:	GPLv3
 Group:		System/Libraries
 URL:		https://linphone.org/
 Source0:	https://gitlab.linphone.org/BC/public/%{name}/-/archive/%{?commit:%{commit}}%{!?commit:%{version}}/%{name}-%{?commit:%{commit}}%{!?commit:%{version}}.tar.bz2
+Patch100:	postquantumcryptoengine-5.2.94_fix_sizeof_declaration.patch
+
 BuildRequires:	cmake
 BuildRequires:	ninja
 BuildRequires:	bctoolbox-static-devel
