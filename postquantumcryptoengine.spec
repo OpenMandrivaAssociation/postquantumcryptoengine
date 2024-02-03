@@ -1,28 +1,28 @@
-%define major 1
-%define libname %mklibname %{name}
-%define devname %mklibname %{name} -d
+%global major 1
+%global libname %mklibname %{name}
+%global devname %mklibname %{name} -d
 
 %bcond_with	static
 %bcond_without	strict
 %bcond_without	tests
 
 # NOTE: use commit if the last release is still in beta
-#%%global commit 8bdb9c1d3988a389af462c793189d11165733d2a
+%global commit	ea086ea0aa9ec3b5cfb5be7d73fd6da579e1dce9
 
 Summary:	Post Quantum algorithm integration to bctoolbox
 Name:		postquantumcryptoengine
-Version:	5.2.94
+Version:	5.3.13
 Release:	1
 License:	GPLv3
 Group:		System/Libraries
 URL:		https://linphone.org/
 Source0:	https://gitlab.linphone.org/BC/public/%{name}/-/archive/%{?commit:%{commit}}%{!?commit:%{version}}/%{name}-%{?commit:%{commit}}%{!?commit:%{version}}.tar.bz2
+Patch0:		postquantumcryptoengine-5.2.94-cmake-config-location.patch 
 Patch100:	postquantumcryptoengine-5.2.94_fix_sizeof_declaration.patch
 
 BuildRequires:	cmake
 BuildRequires:	ninja
-BuildRequires:	bctoolbox-static-devel
-BuildRequires:	cmake(bctoolbox)
+BuildRequires:	cmake(BCToolbox)
 BuildRequires:	cmake(liboqs)
 
 %description
@@ -33,6 +33,9 @@ Quantum Cryptography.
  *  HQC 128, 192 and 256 (NIST round 3 version)
  *  X25519 and X448 in KEM version and a way to combine two or more of
     theses.
+
+%files
+%{_bindir}/pqcrypto-tester
 
 #---------------------------------------------------------------------------
 
@@ -67,12 +70,11 @@ This package contains development files for %{name}
 %license LICENSE.txt
 %{_includedir}/%{name}/
 %{_libdir}/lib%{name}.so
-%{_libdir}/cmake/%{name}
+%{_datadir}/cmake/PostQuantumCryptoEngine
 
 #---------------------------------------------------------------------------
 
 %prep
-#%%autosetup -p1 -n %{name}-%{version}-beta-%{commit}
 %autosetup -p1 -n %{name}-%{?commit:%{commit}}%{!?commit:%{version}}
 
 %build
@@ -80,15 +82,9 @@ This package contains development files for %{name}
 	-DENABLE_STATIC:BOOL=%{?with_static:ON}%{?!with_static:OFF} \
 	-DENABLE_STRICT:BOOL=%{?with_strict:ON}%{?!with_strict:OFF} \
 	-DENABLE_TESTS:BOOL=%{?with_tests:ON}%{?!with_tests:OFF} \
-	-DCONFIG_PACKAGE_LOCATION:PATH=%{_libdir}/cmake/%{name} \
 	-G Ninja
 %ninja_build
 
 %install
 %ninja_install -C build
-
-# fix cmake stuff path
-install -dm 0755 %{buildroot}%{_libdir}/cmake
-mv %{buildroot}%{_datadir}/%{name}/cmake %{buildroot}%{_libdir}/cmake/%{name}
-rmdir %{buildroot}%{_datadir}/%{name}
 
