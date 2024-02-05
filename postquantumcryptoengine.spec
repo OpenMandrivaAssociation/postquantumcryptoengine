@@ -25,7 +25,7 @@ Patch100:	postquantumcryptoengine-5.2.94_fix_sizeof_declaration.patch
 
 BuildRequires:	cmake
 BuildRequires:	ninja
-BuildRequires:	cmake(BCToolbox)
+BuildRequires:	cmake(bctoolbox)
 BuildRequires:	cmake(liboqs)
 
 %description
