@@ -2,17 +2,20 @@
 %global libname %mklibname %{name}
 %global devname %mklibname %{name} -d
 
+# exclude unwanted cmake requires
+%global __provides_exclude_from ^%{_datadir}/cmake/*/Find.*cmake$
+
 %bcond_with	static
 %bcond_without	strict
 %bcond_without	tests
 
 # NOTE: use commit if the last release is still in beta
-%global commit	ea086ea0aa9ec3b5cfb5be7d73fd6da579e1dce9
+#global commit	ea086ea0aa9ec3b5cfb5be7d73fd6da579e1dce9
 
 Summary:	Post Quantum algorithm integration to bctoolbox
 Name:		postquantumcryptoengine
 Version:	5.3.13
-Release:	1
+Release:	2
 License:	GPLv3
 Group:		System/Libraries
 URL:		https://linphone.org/
