@@ -11,7 +11,7 @@
 
 Summary:	Post Quantum algorithm integration to bctoolbox
 Name:		postquantumcryptoengine
-Version:	5.3.97
+Version:	5.4.17
 Release:	1
 License:	GPLv3
 Group:		System/Libraries
