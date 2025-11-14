@@ -17,13 +17,22 @@ License:	GPLv3
 Group:		System/Libraries
 URL:		https://linphone.org/
 Source0:	https://gitlab.linphone.org/BC/public/%{name}/-/archive/%{version}/%{name}-%{version}.tar.bz2
-Patch0:		postquantumcryptoengine-5.2.94-cmake-config-location.patch 
-Patch100:	postquantumcryptoengine-5.2.94_fix_sizeof_declaration.patch
-
 BuildRequires:	cmake
 BuildRequires:	ninja
 BuildRequires:	cmake(bctoolbox)
 BuildRequires:	cmake(liboqs)
+
+BuildSystem:	cmake
+BuildOption:	-DENABLE_STRICT:BOOL=%{?with_strict:ON}%{?!with_strict:OFF}
+BuildOption:	-DENABLE_UNIT_TESTS:BOOL=%{?with_unit_tests:ON}%{?!with_unit_tests:OFF}
+
+%patchlist
+postquantumcryptoengine-5.2.94-cmake-config-location.patch 
+postquantumcryptoengine-5.2.94_fix_sizeof_declaration.patch
+# don't install unit tester
+%if %{with unit_tests} && ! %{with unit_tests_install}
+postquantumcryptoengine-5.4.50-dont-install-tester.patch
+%endif
 
 %description
 postquantumcryptoengine is an extension to the bctoolbox lib providing Post
@@ -75,30 +84,4 @@ This package contains development files for %{name}
 %{_datadir}/cmake/PostQuantumCryptoEngine
 
 #---------------------------------------------------------------------------
-
-%prep
-%autosetup -p1 -n %{name}-%{?commit:%{commit}}%{!?commit:%{version}}
-
-%build
-%cmake \
-	-DENABLE_STRICT:BOOL=%{?with_strict:ON}%{?!with_strict:OFF} \
-	-DENABLE_UNIT_TESTS:BOOL=%{?with_unit_tests:ON}%{?!with_unit_tests:OFF} \
-	-G Ninja
-%ninja_build
-
-%install
-%ninja_install -C build
-
-# don't install unit tester
-%if %{with unit_tests} && ! %{with unit_tests_install}
-rm -f %{buildroot}%{_bindir}/pqcrypto-tester
-%endif
-
-%check
-%if %{with unit_tests}
-pushd build
-#FIXME: some tests may fail at ABF
-ctest || true
-popd
-%endif
 

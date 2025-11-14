@@ -1,0 +1,17 @@
+--- a/tester/CMakeLists.txt
++++ b/tester/CMakeLists.txt
+@@ -41,9 +41,12 @@
+ 
+ add_test(NAME pqcrypto-tester COMMAND pqcrypto-tester)
+
++	if(NOT UNIX)
+ install(TARGETS pqcrypto-tester
+ 	RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+ 	LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+ 	ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+ 	PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
+ )
++	endif()
++
+
+
