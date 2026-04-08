@@ -1,0 +1,112 @@
+diff -up postquantumcryptoengine-5.4.102/src/crypto.cc.omv~ postquantumcryptoengine-5.4.102/src/crypto.cc
+--- postquantumcryptoengine-5.4.102/src/crypto.cc.omv~	2026-04-09 00:18:37.295783988 +0200
++++ postquantumcryptoengine-5.4.102/src/crypto.cc	2026-04-09 00:19:37.521789817 +0200
+@@ -65,6 +65,7 @@ static_assert(KYBER1024::kPkSize == OQS_
+ static_assert(KYBER1024::kCtSize == OQS_KEM_kyber_1024_length_ciphertext, "forwarding oqs kyber define mismatch");
+ static_assert(KYBER1024::kSsSize == OQS_KEM_kyber_1024_length_shared_secret, "forwarding oqs kyber define mismatch");
+ 
++#ifdef OQS_KEM_hqc_128_length_secret_key
+ static_assert(HQC128::kSkSize == OQS_KEM_hqc_128_length_secret_key, "forwarding oqs hqc define mismatch");
+ static_assert(HQC128::kPkSize == OQS_KEM_hqc_128_length_public_key, "forwarding oqs hqc define mismatch");
+ static_assert(HQC128::kCtSize == OQS_KEM_hqc_128_length_ciphertext, "forwarding oqs hqc define mismatch");
+@@ -77,6 +78,7 @@ static_assert(HQC256::kSkSize == OQS_KEM
+ static_assert(HQC256::kPkSize == OQS_KEM_hqc_256_length_public_key, "forwarding oqs hqc define mismatch");
+ static_assert(HQC256::kCtSize == OQS_KEM_hqc_256_length_ciphertext, "forwarding oqs hqc define mismatch");
+ static_assert(HQC256::kSsSize == OQS_KEM_hqc_256_length_shared_secret, "forwarding oqs hqc define mismatch");
++#endif
+ 
+ K25519::K25519(int hashId){
+ 	this->mName = BCTBX_ECDH_X25519;
+@@ -237,6 +239,7 @@ int KYBER1024::decaps(vector<uint8_t> &s
+ }
+ 
+ 
++#ifdef OQS_KEM_hqc_128_length_secret_key
+ int HQC128::keyGen(vector<uint8_t> &pk, vector<uint8_t> &sk) const noexcept {
+ 	pk.resize(kPkSize);
+ 	sk.resize(kSkSize);
+@@ -305,6 +308,7 @@ int HQC256::decaps(vector<uint8_t> &ss,
+ 	// Key decapsulation with HQC256
+ 	return OQS_KEM_hqc_256_decaps(ss.data(), ct.data(), sk.data());
+ }
++#endif
+ 
+ /* KEM INTERFACE FOR CLASSIC ALGORITHMS */
+ 
+diff -up postquantumcryptoengine-5.4.102/tester/crypto.cc.omv~ postquantumcryptoengine-5.4.102/tester/crypto.cc
+--- postquantumcryptoengine-5.4.102/tester/crypto.cc.omv~	2026-04-09 00:19:56.220671415 +0200
++++ postquantumcryptoengine-5.4.102/tester/crypto.cc	2026-04-09 00:20:45.841564061 +0200
+@@ -111,6 +111,7 @@ static void ECDH_KEM_test(void) {
+ 	ssb.clear();
+ }
+ 
++#ifdef OQS_KEM_hqc_128_length_secret_key
+ static void HQC_test(void){
+ 	std::vector<uint8_t> pk, sk, ct, ssa, ssb;
+ 
+@@ -175,6 +176,7 @@ static void HQC_test(void){
+ 
+ 	ssb.clear();
+ }
++#endif
+ 
+ static void KYBER_test(void){
+ 	std::vector<uint8_t> pk, sk, ct, ssa, ssb;
+@@ -395,6 +397,7 @@ static void HYBRID_KEM_test(){
+ 
+ 	ssb.clear();
+ 
++#ifdef OQS_KEM_hqc_128_length_secret_key
+ 	/* K25519 - HQC128 */
+ 
+ 	HYBRID_KEM hybK255Hqc128 = HYBRID_KEM({std::make_shared<K25519>(BCTBX_MD_SHA256), std::make_shared<HQC128>()}, BCTBX_MD_SHA256);
+@@ -418,6 +421,7 @@ static void HYBRID_KEM_test(){
+ 	BC_ASSERT_TRUE(hybridX25519Hqc128Sha256Pattern.at(2) == ssb);
+ 
+ 	ssb.clear();
++#endif
+ 
+ 	/* K448 - KYBER1024 */
+ 
+@@ -541,6 +545,7 @@ static void HYBRID_KEM_test(){
+ 
+ 	ssb.clear();
+ 
++#ifdef OQS_KEM_hqc_128_length_secret_key
+ 	/* K448 - HQC256 */
+ 
+ 	HYBRID_KEM hybK448Hqc256Sha256 = HYBRID_KEM({std::make_shared<K448>(BCTBX_MD_SHA256), std::make_shared<HQC256>()}, BCTBX_MD_SHA256);
+@@ -684,11 +689,14 @@ static void HYBRID_KEM_test(){
+ 	BC_ASSERT_TRUE(hybridX448Kyber1024Hqc256Sha512Pattern.at(2) == ssb);
+ 
+ 	ssb.clear();
++#endif
+ }
+ 
+ static test_t crypto_tests[] = {
+ 	TEST_NO_TAG("ECDH KEM", ECDH_KEM_test),
++#ifdef OQS_KEM_hqc_128_length_secret_key
+ 	TEST_NO_TAG("HQC", HQC_test),
++#endif
+ 	TEST_NO_TAG("KYBER", KYBER_test),
+ 	TEST_NO_TAG("MLKEM", MLKEM_test),
+ 	TEST_NO_TAG("HYBRID KEM", HYBRID_KEM_test),
+diff -up postquantumcryptoengine-5.4.102/include/postquantumcryptoengine/crypto.hh.omv~ postquantumcryptoengine-5.4.102/include/postquantumcryptoengine/crypto.hh
+--- postquantumcryptoengine-5.4.102/include/postquantumcryptoengine/crypto.hh.omv~	2026-04-09 00:25:19.388295849 +0200
++++ postquantumcryptoengine-5.4.102/include/postquantumcryptoengine/crypto.hh	2026-04-09 00:26:00.500469781 +0200
+@@ -232,6 +232,7 @@ public:
+ 	int decaps(std::vector<uint8_t> &ss, const std::vector<uint8_t> &ct, const std::vector<uint8_t> &sk) const noexcept override;
+ };
+ 
++#ifdef OQS_KEM_hqc_128_length_secret_key
+ /**
+  * @brief The HQC128 class extends the KEM class
+  *		Initialises all key size parameters
+@@ -282,6 +283,7 @@ public:
+ 	int encaps(std::vector<uint8_t> &ct, std::vector<uint8_t> &ss, const std::vector<uint8_t> &pk) const noexcept override;
+ 	int decaps(std::vector<uint8_t> &ss, const std::vector<uint8_t> &ct, const std::vector<uint8_t> &sk) const noexcept override;
+ };
++#endif
+ 
+ /**
+  * @brief The HYBRID_KEM class extends the KEM class

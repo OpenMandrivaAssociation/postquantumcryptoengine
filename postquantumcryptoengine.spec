@@ -29,6 +29,9 @@ BuildOption:	-DENABLE_UNIT_TESTS:BOOL=%{?with_unit_tests:ON}%{?!with_unit_tests:
 %patchlist
 postquantumcryptoengine-5.2.94-cmake-config-location.patch 
 postquantumcryptoengine-5.2.94_fix_sizeof_declaration.patch
+# HQC has been dropped from liboqs because of security design flaws
+# better to keep it out.
+pqce-drop-hqc.patch
 # don't install unit tester
 %if %{with unit_tests} && ! %{with unit_tests_install}
 postquantumcryptoengine-5.4.50-dont-install-tester.patch
